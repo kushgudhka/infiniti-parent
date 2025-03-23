@@ -2,6 +2,7 @@ package in.aceinvesting.parent.service.impl;
 
 import in.aceinvesting.parent.dto.MarketData;
 import in.aceinvesting.parent.entity.MarketDataEntity;
+import in.aceinvesting.parent.logger.InfinitiLogger;
 import in.aceinvesting.parent.repository.MarketDataRepo;
 import in.aceinvesting.parent.service.MarketDataProcessorService;
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +32,7 @@ public class MarketDataProcessorServiceImpl implements MarketDataProcessorServic
     public void processMarketData(MarketData marketData) {
         // Send market data to connected clients
         messagingTemplate.convertAndSend("/topic/live-market", marketData);
-        log.info("📊 Processing market data for symbol: {}", marketData.getSymbol());
+        InfinitiLogger.info("Processing market data for symbol: {}", marketData.getSymbol());
 
         marketDataRepo.findBySymbol(marketData.getSymbol())
                 .ifPresentOrElse(existingData -> {
@@ -53,7 +54,7 @@ public class MarketDataProcessorServiceImpl implements MarketDataProcessorServic
         existingData.setLastUpdated(Timestamp.from(Instant.now()));
 
         marketDataRepo.save(existingData);
-        log.info("✅ Updated market data for: {}", newData.getSymbol());
+        InfinitiLogger.info("Updated market data for: {}", newData.getSymbol());
     }
 
     private void saveNewMarketData(MarketData newData) {
@@ -67,6 +68,6 @@ public class MarketDataProcessorServiceImpl implements MarketDataProcessorServic
                 .build();
 
         marketDataRepo.save(newEntity);
-        log.info("✅ Inserted new market data for: {}", newData.getSymbol());
+        InfinitiLogger.info("Inserted new market data for: {}", newData.getSymbol());
     }
 }

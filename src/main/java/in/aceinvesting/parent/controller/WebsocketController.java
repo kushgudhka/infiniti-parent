@@ -1,6 +1,7 @@
 package in.aceinvesting.parent.controller;
 
 import in.aceinvesting.parent.dto.MarketData;
+import in.aceinvesting.parent.logger.InfinitiLogger;
 import in.aceinvesting.parent.service.MarketDataProcessorService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,7 +25,7 @@ public class WebsocketController {
     @MessageMapping("/process-market")
     @SendTo("/topic/live-market")
     public MarketData handleMarketData(MarketData marketData) {
-        log.info("INFINITI : Received WebSocket Market Data: {}", marketData);
+        InfinitiLogger.info("Received WebSocket Market Data: {}", marketData);
         marketDataProcessor.processMarketData(marketData);
         return marketData;
     }
