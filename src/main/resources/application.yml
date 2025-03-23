@@ -1,0 +1,8 @@
+upstox:
+  api:
+    key: YOUR_API_KEY
+    secret: YOUR_API_SECRET
+  access:
+    token: YOUR_ACCESS_TOKEN
+  webSocket:
+    url: wss://api.upstox.com/live/feed

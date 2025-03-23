@@ -1,0 +1,87 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.9'
+	id 'io.spring.dependency-management' version '1.1.7'
+}
+
+group = 'in.aceinvesting'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(21)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+ext {
+	set('springCloudVersion', "2023.0.5")
+}
+
+dependencies {
+	// Spring Boot Starters (Core Spring Modules)
+	implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'           // JDBC support
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'          // JPA (Hibernate) support
+	implementation 'org.springframework.boot:spring-boot-starter-jdbc'              // JDBC access without JPA
+	implementation 'org.springframework.boot:spring-boot-starter-security'          // Security (Auth & Authorization)
+	implementation 'org.springframework.boot:spring-boot-starter-web'               // REST API & MVC
+	implementation 'org.springframework.boot:spring-boot-starter-webflux'           // Reactive Programming (WebFlux)
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'			// WebSockets (Real-time communication)
+	implementation 'com.fasterxml.jackson.core:jackson-databind'  					// WebSockets (Real-time communication)
+
+	// Spring Cloud Stream & Kafka (Event-Driven Microservices)
+	implementation 'org.apache.kafka:kafka-streams'                                  // Kafka Streams API
+	implementation 'org.springframework.cloud:spring-cloud-stream'                  // Event Streaming Abstraction
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka'     // Kafka Binder for Cloud Stream
+	implementation 'org.springframework.cloud:spring-cloud-stream-binder-kafka-streams' // Kafka Streams Binder
+	implementation 'org.springframework.kafka:spring-kafka'                         // Kafka integration for Spring
+
+	// Database Drivers
+	implementation 'org.postgresql:postgresql:42.7.2'    // PostgreSQL Driver
+	runtimeOnly 'com.h2database:h2'                      // In-memory H2 Database (for testing)
+
+	// Lombok (Boilerplate Reduction)
+	compileOnly 'org.projectlombok:lombok'              // Lombok (at compile time)
+	annotationProcessor 'org.projectlombok:lombok'      // Lombok Annotation Processor
+
+	// Testing (JUnit & Spring Test Suite)
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'          // Spring Boot Test (JUnit 5)
+	testImplementation 'io.projectreactor:reactor-test'                             // Reactor Test (Reactive Testing)
+	testImplementation 'org.springframework.cloud:spring-cloud-stream-test-binder'  // Cloud Stream Test Binder
+	testImplementation 'org.springframework.kafka:spring-kafka-test'                // Kafka Integration Testing
+	testImplementation 'org.springframework.security:spring-security-test'          // Spring Security Testing
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'                    // JUnit Platform Launcher (for JUnit 5)
+
+	// Google Gson for JSON handling
+	implementation 'com.google.code.gson:gson:2.8.8'
+
+	// Protocol Buffers
+	implementation 'com.google.protobuf:protobuf-java:3.15.8'
+
+	// Upstox API client
+	implementation 'com.upstox.api:upstox-java-sdk:1.0.0'
+}
+
+
+dependencyManagement {
+	imports {
+		mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+	}
+}
+
+tasks.named('bootBuildImage') {
+	builder = 'paketobuildpacks/builder-jammy-base:latest'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
