@@ -2,6 +2,7 @@ package in.aceinvesting.parent.client;
 
 import in.aceinvesting.parent.config.UpstoxConfig;
 import in.aceinvesting.parent.dto.MarketData;
+import in.aceinvesting.parent.logger.InfinitiLogger;
 import in.aceinvesting.parent.service.MarketDataProcessorService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
@@ -32,9 +33,9 @@ public class UpstoxWebSocketClient implements WebSocketHandler {
             String url = upstoxConfig.getWebSocketUrl() + "?apiKey=" + upstoxConfig.getApiKey() +
                     "&access_token=" + upstoxConfig.getAccessToken();
             this.session = webSocketClient.doHandshake(this, url).get();
-            log.info("✅ Connected to Upstox WebSocket");
+            InfinitiLogger.info("Connected to Upstox WebSocket");
         } catch (Exception e) {
-            log.error("❌ Failed to connect to Upstox WebSocket: {}", e.getMessage());
+            InfinitiLogger.error("Failed to connect to Upstox WebSocket: {}", e.getMessage());
         }
     }
 
@@ -45,37 +46,37 @@ public class UpstoxWebSocketClient implements WebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        log.info("🔗 WebSocket connection established.");
+        InfinitiLogger.info("WebSocket connection established.");
     }
 
     @Override
     public void handleMessage(WebSocketSession session, WebSocketMessage<?> message) {
         try {
-            log.info("📊 Received data: {}", message.getPayload());
+            InfinitiLogger.info("Received data: {}", message.getPayload());
             MarketData marketData = parseMarketData(message.getPayload().toString());
             marketDataProcessorService.processMarketData(marketData);
         } catch (Exception e) {
-            log.error("❌ Error processing WebSocket message: {}", e.getMessage());
+            InfinitiLogger.error("Error processing WebSocket message: {}", e.getMessage());
         }
     }
 
     @Override
     public void handleTransportError(WebSocketSession session, Throwable exception) {
-        log.error("❌ WebSocket Error: {}", exception.getMessage());
+        InfinitiLogger.error("WebSocket Error: {}", exception.getMessage());
     }
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        log.warn("🔌 WebSocket connection closed: {}", status);
+        InfinitiLogger.warn("WebSocket connection closed: {}", status);
         reconnect();
     }
 
     private void reconnect() {
         try {
-            log.info("♻️ Reconnecting to Upstox WebSocket...");
+            InfinitiLogger.info("Reconnecting to Upstox WebSocket...");
             connect();
         } catch (Exception e) {
-            log.error("❌ Reconnection failed: {}", e.getMessage());
+            InfinitiLogger.error("Reconnection failed: {}", e.getMessage());
         }
     }
 
@@ -89,9 +90,9 @@ public class UpstoxWebSocketClient implements WebSocketHandler {
             try {
                 String subscriptionMessage = buildSubscriptionMessage(symbols);
                 session.sendMessage(new TextMessage(subscriptionMessage));
-                log.info("📢 Subscribed to symbols: {}", symbols);
+                InfinitiLogger.info("Subscribed to symbols: {}", symbols);
             } catch (Exception e) {
-                log.error("❌ Subscription failed: {}", e.getMessage());
+                InfinitiLogger.error("Subscription failed: {}", e.getMessage());
             }
         }
     }

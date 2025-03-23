@@ -2,6 +2,7 @@ package in.aceinvesting.parent.controller;
 
 import in.aceinvesting.parent.dto.UserAccessSource;
 import in.aceinvesting.parent.entity.ResponseEntity;
+import in.aceinvesting.parent.logger.InfinitiLogger;
 import in.aceinvesting.parent.service.UserAccessSourceService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -37,7 +38,7 @@ public class UserAccessSourceController {
             validUser = userAccessSourceService.findByPan(userAccessSource.getPanNumber());
             return new ResponseEntity(validUser.getUserId(), validUser.getUsername(), validUser.getStatus(), "SUCCESS");
         } else {
-            log.error("INFINITI: Error while saving user access source for PAN : {}", userAccessSource.getPanNumber());
+            InfinitiLogger.error("Error while saving user access source for PAN : {}", userAccessSource.getPanNumber());
             return new ResponseEntity("FAILED TO SAVE THE DATA..");
         }
 
