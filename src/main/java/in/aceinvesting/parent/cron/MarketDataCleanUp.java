@@ -17,7 +17,6 @@ import java.time.ZoneId;
  */
 @Slf4j
 @RequiredArgsConstructor
-@NoArgsConstructor
 @Data
 public class MarketDataCleanUp {
 
